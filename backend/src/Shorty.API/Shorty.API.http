@@ -1,0 +1,13 @@
+
+
+POST http://localhost:5254/
+Accept: application/json
+Content-Type: application/json
+{ "url": "https://github.com/RomanEmreis/shorty" }
+
+###
+
+GET http://localhost:5254/CYWQ6
+Accept: application/json
+
+###
