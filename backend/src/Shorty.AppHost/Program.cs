@@ -4,7 +4,12 @@ var builder = DistributedApplication.CreateBuilder(args);
 var redis = builder.AddRedis("shorty-cache")
     .WithRedisCommander();
 
-builder.AddProject<Projects.Shorty_API>("shorty-api")
+var api = builder.AddProject<Projects.Shorty_API>("shorty-api")
     .WithReference(redis);
+
+// frontend
+builder.AddNpmApp("frontend", "../../../frontend")
+    .WithReference(api)
+    .WithHttpsEndpoint(env: "PORT");
 
 builder.Build().Run();
