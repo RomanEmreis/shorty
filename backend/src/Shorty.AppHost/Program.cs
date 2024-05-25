@@ -3,18 +3,15 @@ var builder = DistributedApplication.CreateBuilder(args);
 // backend
 var shortyDbName = "shorty-db";
 
-// db
 var postgres = builder.AddPostgres("postgres")
     .WithEnvironment("POSTGRES_DB", shortyDbName)
     .WithBindMount("../Shorty.API/Data", "/docker-entrypoint-initdb.d")
     .WithPgAdmin()
     .AddDatabase(shortyDbName);
 
-// cache
 var redis = builder.AddRedis("shorty-cache")
     .WithRedisCommander();
 
-// web api
 var api = builder.AddProject<Projects.Shorty_API>("shorty-api")
     .WithReference(redis)
     .WithReference(postgres);
