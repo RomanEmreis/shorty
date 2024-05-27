@@ -1,7 +1,4 @@
-using Dapper;
-using Microsoft.Extensions.Caching.Distributed;
-using Npgsql;
-using Shorty.API;
+using Shorty.API.Services;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateSlimBuilder(args);
@@ -14,6 +11,8 @@ builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.T
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCors();
 
+builder.Services.AddScoped<IUrlDataService, UrlDataService>();
+
 var app = builder.Build();
 
 app.UseCors(x => x
@@ -24,63 +23,22 @@ app.UseCors(x => x
 
 app.MapDefaultEndpoints();
 
-app.MapPost("/", async (IDistributedCache cache, NpgsqlConnection db, IHttpContextAccessor httpContextAccessor, CreateShortUrl command, CancellationToken cancellationToken) => 
+app.MapPost("/", async (IUrlDataService urlService, IHttpContextAccessor httpContextAccessor, CreateShortUrl command, CancellationToken cancellationToken) => 
 {
-    var url = command.Url;
-    var token = new ShortUrlToken(url);
-    var value = token.GetValue();
-
+    var token = await urlService.SaveAsync(command.Url, cancellationToken);
+    
     var scheme = httpContextAccessor.HttpContext!.Request.Scheme;
-    var host = httpContextAccessor.HttpContext!.Request.Host;
+    var host   = httpContextAccessor.HttpContext!.Request.Host;
 
-    const string sql = """
-        INSERT INTO shorty_urls (url, token)
-        VALUES (@url, @value)
-        """;
-
-    _ = await db.ExecuteScalarAsync(sql, new { url, value });
-
-    var options = new DistributedCacheEntryOptions 
-    { 
-        SlidingExpiration = TimeSpan.FromDays(3),
-        AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
-    };
-
-    await cache.SetStringAsync(value, url, cancellationToken);
-
-    return Results.Ok($"{scheme}://{host}/{value}");
+    return Results.Ok($"{scheme}://{host}/{token}");
 });
 
-app.MapGet("/{token}", async (IDistributedCache cache, NpgsqlConnection db, string token, CancellationToken cancellationToken) => 
+app.MapGet("/{token}", async (IUrlDataService urlService, string token, CancellationToken cancellationToken) => 
 {
-    var url = await cache.GetStringAsync(token, cancellationToken);
-    if (string.IsNullOrEmpty(url))
-    {
-        const string sql = """
-            SELECT url 
-            FROM shorty_urls 
-            WHERE token = @token
-            """;
-
-        url = await db.QueryFirstAsync<string>(sql, new { token });
-
-        if (!string.IsNullOrEmpty(url))
-        {
-            var options = new DistributedCacheEntryOptions
-            {
-                SlidingExpiration = TimeSpan.FromDays(3),
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
-            };
-
-            await cache.SetStringAsync(token, url, cancellationToken);
-        }
-        else 
-        {
-            return Results.NotFound();
-        }
-    }
-
-    return Results.Redirect(url);
+    var url = await urlService.GetAsync(token, cancellationToken);
+    return string.IsNullOrEmpty(url)
+        ? Results.NotFound()
+        : Results.Redirect(url);
 });
 
 app.Run();
