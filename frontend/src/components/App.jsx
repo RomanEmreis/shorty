@@ -12,9 +12,9 @@ export default App = () => {
   const [newUrl, setNewUrl] = useState(null);
   const [url   , setUrl]    = useState('');
 
-  const handleCopy          = useCallback(() => navigator.clipboard.writeText(newUrl), [newUrl]);
   const handleFocus         = useCallback((e) => e.target.select(), []);
   const handleChange        = useCallback((e) => setUrl(e.target.value), [])
+  const handleCopy          = useCallback(() => navigator.clipboard.writeText(newUrl), [newUrl]);
   const handleClick         = useCallback(() => {
     setError(null);
     setNewUrl(null);

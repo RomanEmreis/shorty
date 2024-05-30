@@ -8,18 +8,36 @@ internal sealed class UrlDataService(IDistributedCache cache, NpgsqlConnection d
 {
     public async Task<string> SaveAsync(string url, CancellationToken cancellationToken = default)
     {
-        var token  = new ShortUrlToken(url);
-        var value  = token.GetValue();
+        var value = await GetByUrlAsync(url, cancellationToken);
+        if (string.IsNullOrEmpty(value))
+        {
+            var token = new ShortUrlToken(url);
+            value     = token.GetValue();
 
-        const string sql = """
-            INSERT INTO shorty_urls (url, token)
-            VALUES (@url, @value)
-            """;
+            const string sql = """
+                INSERT INTO shorty_urls (url, token)
+                VALUES (@url, @value)
+                """;
 
-        _ = await db.ExecuteScalarAsync(sql, new { url, value });
+            _ = await db.ExecuteScalarAsync(sql, new { url, value });
+        }
+
         await SaveToCacheAsync(value, url, cancellationToken);
 
         return value;
+    }
+
+    private async Task<string?> GetByUrlAsync(string url, CancellationToken cancellationToken)
+    {
+        const string sql = """
+            SELECT token 
+            FROM shorty_urls 
+            WHERE url = @url
+            LIMIT 1
+            """;
+
+        var token = await db.QueryFirstOrDefaultAsync<string?>(sql, new { url });
+        return token;
     }
 
     public async Task<string> GetAsync(string token, CancellationToken cancellationToken = default)
@@ -31,9 +49,10 @@ internal sealed class UrlDataService(IDistributedCache cache, NpgsqlConnection d
                 SELECT url 
                 FROM shorty_urls 
                 WHERE token = @token
+                LIMIT 1
                 """;
 
-            url = await db.QueryFirstAsync<string>(sql, new { token });
+            url = await db.QueryFirstOrDefaultAsync<string>(sql, new { token });
             await SaveToCacheAsync(token, url, cancellationToken);
         }
 
