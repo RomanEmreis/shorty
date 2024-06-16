@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shorty-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shorty-app
+  template:
+    metadata:
+      labels:
+        app: shorty-app
+    spec:
+      containers:
+      - name: shorty-app
+        image: shorty-app
+        ports:
+        - containerPort: 9005
+        imagePullPolicy: Never
+        env:
+        - name: PORT
+          value: '9005'
+        - name: services__shorty-api__http__0
+          value: 'http://localhost:8080'
