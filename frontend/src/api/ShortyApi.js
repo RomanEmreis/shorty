@@ -1,5 +1,5 @@
 export default class ShortyApi {
-  baseUrl = process.env['services__shorty-api__http__0'];
+  baseUrl = process.env['services__shorty-api__http__0'] ?? 'http://localhost:8080';
   create  = (url, onload, onerror) => {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', this.baseUrl);

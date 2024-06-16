@@ -1,11 +1,11 @@
 {
   "TemplatePath": null,
   "ContainerSettings": {
-    "Registry": "localhost: 5005",
+    "Registry": null,
     "RepositoryPrefix": null,
     "Tags": [
       "latest"
     ],
-    "Builder": "podman"
+    "Builder": "docker"
   }
 }
