@@ -8,7 +8,6 @@ builder.AddRedisDistributedCache("shorty-cache");
 builder.AddNpgsqlDataSource("shorty-db");
 
 builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default));
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddCors();
 
 builder.Services.AddScoped<IUrlDataService, UrlDataService>();
@@ -23,14 +22,10 @@ app.UseCors(x => x
 
 app.MapDefaultEndpoints();
 
-app.MapPost("/", async (IUrlDataService urlService, IHttpContextAccessor httpContextAccessor, CreateShortUrl command, CancellationToken cancellationToken) => 
+app.MapPost("/", async (IUrlDataService urlService, CreateShortUrl command, CancellationToken cancellationToken) => 
 {
     var token = await urlService.SaveAsync(command.Url, cancellationToken);
-    
-    var scheme = httpContextAccessor.HttpContext!.Request.Scheme;
-    var host   = httpContextAccessor.HttpContext!.Request.Host;
-
-    return Results.Ok($"{scheme}://{host}/{token}");
+    return Results.Ok(token);
 });
 
 app.MapGet("/{token}", async (IUrlDataService urlService, string token, CancellationToken cancellationToken) => 

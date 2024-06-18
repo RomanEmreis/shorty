@@ -1,8 +1,20 @@
-FROM node:latest
+FROM node:20 as build
 WORKDIR /app
-ENV services__shorty-api__http__0=http://localhost:8080
-COPY package*.json ./
+
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+
 RUN npm install
+
 COPY . .
-EXPOSE 3000
-CMD [ "npm", "start" ]
+
+RUN npm run build
+
+FROM nginx:alpine
+
+COPY --from=build /app/default.conf.template /etc/nginx/templates/default.conf.template
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Expose the default nginx port
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
