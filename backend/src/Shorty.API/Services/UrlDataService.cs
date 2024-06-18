@@ -40,7 +40,7 @@ internal sealed class UrlDataService(IDistributedCache cache, NpgsqlConnection d
         return token;
     }
 
-    public async Task<string> GetAsync(string token, CancellationToken cancellationToken = default)
+    public async Task<string?> GetAsync(string token, CancellationToken cancellationToken = default)
     {
         var url = await cache.GetStringAsync(token, cancellationToken);
         if (string.IsNullOrEmpty(url))
@@ -53,7 +53,10 @@ internal sealed class UrlDataService(IDistributedCache cache, NpgsqlConnection d
                 """;
 
             url = await db.QueryFirstOrDefaultAsync<string>(sql, new { token });
-            await SaveToCacheAsync(token, url, cancellationToken);
+            if (!string.IsNullOrEmpty(url))
+            { 
+                await SaveToCacheAsync(token, url, cancellationToken);
+            }
         }
 
         return url;

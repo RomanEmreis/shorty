@@ -7,7 +7,7 @@ import './App.css';
 
 const api = new ShortyApi();
 
-export default App = () => {
+export default () => {
   const [error , setError]  = useState(null);
   const [newUrl, setNewUrl] = useState(null);
   const [url   , setUrl]    = useState('');
@@ -50,4 +50,4 @@ export default App = () => {
       <div className='copyright'>Created by Roman Emreis & AI</div>
     </div>
   );
-}
+};
