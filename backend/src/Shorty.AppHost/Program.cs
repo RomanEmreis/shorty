@@ -23,7 +23,8 @@ var api = builder.AddProject<Projects.Shorty_API>("shorty-api")
 var proxy = builder.AddYarp("ingress")
     .WithHttpsEndpoint()
     .WithReference(api)
-    .LoadFromConfiguration("ReverseProxy");
+    .LoadFromConfiguration("ReverseProxy")
+    .ExcludeFromManifest(); // Currently YARP is only available on development, so excluding it from the deployement
 
 // frontend
 builder.AddNpmApp("frontend", "../../../frontend")
