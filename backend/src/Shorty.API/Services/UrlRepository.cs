@@ -4,14 +4,14 @@ using Npgsql;
 
 namespace Shorty.API.Services;
 
-internal sealed class UrlDataService(IDistributedCache cache, NpgsqlConnection db) : IUrlDataService
+internal sealed class UrlRepository(IDistributedCache cache, NpgsqlConnection db) : IUrlRepository
 {
     public async Task<string> SaveAsync(string url, CancellationToken cancellationToken = default)
     {
         var value = await GetByUrlAsync(url, cancellationToken);
         if (string.IsNullOrEmpty(value))
         {
-            var token = new ShortUrlToken(url);
+            var token = new ShortUrlToken();
             value     = token.GetValue();
 
             const string sql = """
@@ -53,6 +53,7 @@ internal sealed class UrlDataService(IDistributedCache cache, NpgsqlConnection d
                 """;
 
             url = await db.QueryFirstOrDefaultAsync<string>(sql, new { token });
+
             if (!string.IsNullOrEmpty(url))
             { 
                 await SaveToCacheAsync(token, url, cancellationToken);
@@ -67,12 +68,12 @@ internal sealed class UrlDataService(IDistributedCache cache, NpgsqlConnection d
         if (string.IsNullOrEmpty(url)) return;
 
         var options = CreateDefaultOptions();
-        await cache.SetStringAsync(token, url, cancellationToken);
+        await cache.SetStringAsync(token, url, options, cancellationToken);
     }
 
     private static DistributedCacheEntryOptions CreateDefaultOptions() => new DistributedCacheEntryOptions
     {
-        SlidingExpiration = TimeSpan.FromDays(3),
+        SlidingExpiration               = TimeSpan.FromHours(5),
         AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(30)
     };
 }
