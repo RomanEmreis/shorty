@@ -10,7 +10,7 @@ builder.AddNpgsqlDataSource("shorty-db");
 builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default));
 builder.Services.AddCors();
 
-builder.Services.AddScoped<IUrlDataService, UrlDataService>();
+builder.Services.AddScoped<IUrlRepository, UrlRepository>();
 
 var app = builder.Build();
 
@@ -22,13 +22,13 @@ app.UseCors(x => x
 
 app.MapDefaultEndpoints();
 
-app.MapPost("/", async (IUrlDataService urlService, CreateShortUrl command, CancellationToken cancellationToken) => 
+app.MapPost("/", async (IUrlRepository urlService, CreateShortUrl command, CancellationToken cancellationToken) => 
 {
     var token = await urlService.SaveAsync(command.Url, cancellationToken);
     return Results.Ok(token);
 });
 
-app.MapGet("/{token}", async (IUrlDataService urlService, string token, CancellationToken cancellationToken) => 
+app.MapGet("/{token}", async (IUrlRepository urlService, string token, CancellationToken cancellationToken) => 
 {
     var url = await urlService.GetAsync(token, cancellationToken);
     return string.IsNullOrEmpty(url)
