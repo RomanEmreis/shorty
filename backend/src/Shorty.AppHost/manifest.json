@@ -78,16 +78,16 @@
       ],
       "env": {
         "NODE_ENV": "development",
-        "services__shorty-api__http__0": "{shorty-api.bindings.http.url}",
-        "services__shorty-api__https__0": "{shorty-api.bindings.https.url}",
-        "PORT": "{frontend.bindings.https.targetPort}"
+        "services__ingress__https__0": "{ingress.bindings.https.url}",
+        "PORT": "{frontend.bindings.http.targetPort}"
       },
       "bindings": {
-        "https": {
-          "scheme": "https",
+        "http": {
+          "scheme": "http",
           "protocol": "tcp",
           "transport": "http",
-          "targetPort": 8000
+          "targetPort": 8000,
+          "external": true
         }
       }
     },

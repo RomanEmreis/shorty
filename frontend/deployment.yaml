@@ -21,5 +21,5 @@ spec:
         env:
         - name: PORT
           value: '9005'
-        - name: services__shorty-api__http__0
-          value: 'http://localhost:8080'
+        - name: services__ingress__https__0
+          value: 'http://shorty-api:8080'
