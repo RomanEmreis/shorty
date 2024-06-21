@@ -2,7 +2,7 @@
 
 internal readonly struct ShortUrlToken()
 {
-    private const int    DefaultLength = 5;
+    private const int    DefaultLength = 7;
     private const string Chars         = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     public string GetValue()

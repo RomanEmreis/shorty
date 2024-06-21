@@ -22,7 +22,7 @@ app.UseCors(x => x
 
 app.MapDefaultEndpoints();
 
-app.MapPost("/", async (IUrlRepository urlService, CreateShortUrl command, CancellationToken cancellationToken) => 
+app.MapPost("/create", async (IUrlRepository urlService, CreateShortUrl command, CancellationToken cancellationToken) => 
 {
     var token = await urlService.SaveAsync(command.Url, cancellationToken);
     return Results.Ok(token);
