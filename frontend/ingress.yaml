@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
   name: shorty-ingress
   annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.org/server-snippets: |
       location /create {
@@ -22,6 +23,10 @@ metadata:
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - shorty.localdev.me
+    secretName: shorty-secret-tls
   rules:
     - host: shorty.localdev.me
       http:
