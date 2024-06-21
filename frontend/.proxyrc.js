@@ -2,23 +2,26 @@ const { createProxyMiddleware } = require("http-proxy-middleware");
 module.exports = function (app) {
   const apiUrl            = process.env["services__ingress__https__0"];
   const isProduction      = process.env["NODE_ENV"] !== "development";
-  const tokenRe           = /\/[a-zA-Z0-9]{5}$/;
+  const tokenRe           = /\/[a-zA-Z0-9]{7}$/;
 
   const createTokenProxy  = createProxyMiddleware({
     target:       apiUrl,
     secure:       isProduction,
-    pathRewrite:  { "^/api": "/" },
-    changeOrigin: true
+    pathRewrite:  { "^/": "/create" },
+    method:       "POST",
+    changeOrigin: true,
+    logger: console
   });
 
   const resolveTokenProxy = createProxyMiddleware({
     target:       apiUrl,
     secure:       isProduction,
     pathRewrite:  { "^/": "/" },
-    pathFilter:   (path, req) => path.match(tokenRe) && req.method === 'GET',
+    method:       "GET",
+    pathFilter:   (path, _) => path.match(tokenRe),
     changeOrigin: true
   });
 
-  app.use('/api', createTokenProxy);
-  app.use('/', resolveTokenProxy);
+  app.use('/create', createTokenProxy);
+  app.use('/'      , resolveTokenProxy);
 };
