@@ -1,13 +1,18 @@
-using Shorty.API.Services;
+using Shorty.API;
+using Shorty.API.Features.Urls;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
 builder.AddServiceDefaults();
 builder.AddRedisDistributedCache("shorty-cache");
-builder.AddNpgsqlDataSource("shorty-db");
+builder.AddMongoDBClient("shorty-db");
 
-builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default));
+builder.Services.AddShortyUrlsCollection();
+
+builder.Services.ConfigureHttpJsonOptions(
+    static options => options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default));
+
 builder.Services.AddCors();
 
 builder.Services.AddScoped<IUrlRepository, UrlRepository>();
@@ -19,6 +24,8 @@ app.UseCors(x => x
     .AllowAnyHeader()
     .SetIsOriginAllowed(origin => true) // allow any origin
     .AllowCredentials()); // allow credentials
+
+app.UseShortyUrlsCollection();
 
 app.MapDefaultEndpoints();
 
@@ -35,6 +42,8 @@ app.MapGet("/{token}", async (IUrlRepository urlService, string token, Cancellat
         ? Results.NotFound()
         : Results.Redirect(url);
 });
+
+app.MapGet("/health", () => Results.Ok());
 
 app.Run();
 

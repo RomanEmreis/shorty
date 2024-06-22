@@ -6,20 +6,16 @@ var builder = DistributedApplication.CreateBuilder(args);
 var shortyDbName = "shorty-db";
 
 // database
-var postgres = builder.AddPostgres("postgres")
-    .WithEnvironment("POSTGRES_DB", shortyDbName)
-    .WithBindMount("../Shorty.API/Data", "/docker-entrypoint-initdb.d")
-    .WithPgAdmin()
+var mongo = builder.AddMongoDB("mongo")
     .AddDatabase(shortyDbName);
 
 // cache
-var redis = builder.AddRedis("shorty-cache")
-    .WithRedisCommander();
+var redis = builder.AddRedis("shorty-cache");
 
 // web api
 var api = builder.AddProject<Projects.Shorty_API>("shorty-api")
     .WithReference(redis)
-    .WithReference(postgres);
+    .WithReference(mongo);
 
 var isDev = builder.Environment.IsDevelopment();
 // Currently YARP is only available on development, so excluding it from the deployement
