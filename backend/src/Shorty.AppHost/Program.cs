@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Hosting;
-
 var builder = DistributedApplication.CreateBuilder(args);
 
 // backend
@@ -21,30 +19,16 @@ var api = builder.AddProject<Projects.Shorty_API>("shorty-api")
     .WithReference(redis)
     .WithReference(postgres);
 
-var isDev = builder.Environment.IsDevelopment();
-// Currently YARP is only available on development, so excluding it from the deployement
-if (isDev)
-{
-    // reverse proxy
-    var proxy = builder.AddYarp("ingress")
-        .WithHttpsEndpoint()
-        .WithReference(api)
-        .LoadFromConfiguration("ReverseProxy");
+// reverse proxy
+var proxy = builder.AddYarp("ingress")
+    .WithHttpsEndpoint()
+    .WithReference(api)
+    .LoadFromConfiguration("ReverseProxy");
 
-    // frontend
-    builder.AddNpmApp("frontend", "../../../frontend")
-        .WithReference(proxy)
-        .WithHttpEndpoint(env: "PORT")
-        .WithExternalHttpEndpoints();
-}
-else 
-{
-    // frontend
-    builder.AddNpmApp("frontend", "../../../frontend")
-        .WithReference(api)
-        .WithHttpEndpoint(env: "PORT")
-        .WithExternalHttpEndpoints()
-        .PublishAsDockerFile();
-}
+// frontend
+builder.AddNpmApp("frontend", "../../../frontend")
+    .WithReference(proxy)
+    .WithHttpEndpoint(env: "PORT")
+    .WithExternalHttpEndpoints();
 
 builder.Build().Run();

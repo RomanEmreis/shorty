@@ -50,7 +50,7 @@ internal sealed class UrlRepository(IDistributedCache cache, NpgsqlConnection db
             LIMIT 1
             """;
 
-        var token = await db.QueryFirstOrDefaultAsync<string?>(sql, new { url });
+        var token        = await db.QueryFirstOrDefaultAsync<string?>(sql, new { url });
         return token;
     }
 
