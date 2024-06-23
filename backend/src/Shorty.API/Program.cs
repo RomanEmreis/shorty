@@ -7,19 +7,19 @@ builder.AddServiceDefaults();
 builder.AddRedisDistributedCache("shorty-cache");
 builder.AddNpgsqlDataSource("shorty-db");
 
-builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default));
-builder.Services.AddCors();
+builder.Services.AddRequestTimeouts(
+    static options => options.DefaultPolicy = new() { Timeout = TimeSpan.FromMilliseconds(300) });
+
+builder.Services.ConfigureHttpJsonOptions(
+    static options => options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default));
+
 builder.Services.AddProblemDetails();
 
 builder.Services.AddScoped<IUrlRepository, UrlRepository>();
 
 var app = builder.Build();
 
-app.UseCors(x => x
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .SetIsOriginAllowed(origin => true) // allow any origin
-    .AllowCredentials()); // allow credentials
+app.UseRequestTimeouts();
 
 app.MapDefaultEndpoints();
 
@@ -37,7 +37,7 @@ app.MapGet("/{token}", async (IUrlRepository urlService, string token, Cancellat
         : Results.Redirect(url);
 });
 
-app.MapGet("/health", async () => await Task.FromResult(Results.Ok()));
+app.MapGet("/health", async () => await Task.FromResult(Results.Ok("healthy")));
 
 app.Run();
 
