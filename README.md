@@ -1,5 +1,5 @@
 # Shorty
-Tiny URL service on .NET Aspire
+URL Shortener service on .NET Aspire
 
 ## Status
 | Backend | Frontend |
