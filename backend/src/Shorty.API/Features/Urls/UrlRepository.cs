@@ -6,7 +6,7 @@ namespace Shorty.API.Features.Urls;
 
 public interface IUrlRepository
 {
-    Task<string> SaveAsync(string url, CancellationToken cancellationToken = default);
+    Task<string>  SaveAsync(string url , CancellationToken cancellationToken = default);
     Task<string?> GetAsync(string token, CancellationToken cancellationToken = default);
 }
 
@@ -14,44 +14,29 @@ internal sealed class UrlRepository(IDistributedCache cache, NpgsqlConnection db
 {
     public async Task<string> SaveAsync(string url, CancellationToken cancellationToken = default)
     {
-        var value            = await GetTokenByUrlAsync(url, cancellationToken);
-        if (string.IsNullOrEmpty(value))
-        {
-            const string sql = 
-                """
-                INSERT INTO shorty_urls (token, url, created_at)
-                VALUES (@value, @url, @createdAt)
-                ON CONFLICT (token) DO NOTHING;
-                """;
+        const string sql =
+            """
+            INSERT INTO shorty_urls (token, url, created_at)
+            VALUES (@value, @url, @createdAt)
+            ON CONFLICT (token) DO NOTHING;
+            """;
 
-            var token       = new ShortUrlToken();
-            var createdAt   = DateTime.UtcNow;
-            var count       = 0;
-            do              
-            {               
-                value       = token.GetValue();
-                count       = await db.ExecuteAsync(sql, new { value, url, createdAt });
-            } 
-            while (count == 0);
+        var token        = new ShortUrlToken();
+        var createdAt    = DateTime.UtcNow;
+        var value        = string.Empty;
+        var count        = 0;
+
+        while (count == 0)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            value        = token.GetValue();
+            count        = await db.ExecuteAsync(sql, new { value, url, createdAt });
         }
 
         await SaveToCacheAsync(value, url, cancellationToken);
 
         return value;
-    }
-
-    private async Task<string?> GetTokenByUrlAsync(string url, CancellationToken cancellationToken)
-    {
-        const string sql = 
-            """
-            SELECT token 
-            FROM shorty_urls 
-            WHERE url = @url
-            LIMIT 1
-            """;
-
-        var token        = await db.QueryFirstOrDefaultAsync<string?>(sql, new { url });
-        return token;
     }
 
     public async Task<string?> GetAsync(string token, CancellationToken cancellationToken = default)
