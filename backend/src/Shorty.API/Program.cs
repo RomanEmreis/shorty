@@ -37,7 +37,7 @@ app.MapGet("/{token}", async (IUrlRepository urlService, string token, Cancellat
         : Results.Redirect(url);
 });
 
-app.MapGet("/health", async () => await Task.FromResult(Results.Ok("healthy")));
+app.MapGet("/health", () => Results.Ok("healthy"));
 
 app.Run();
 
