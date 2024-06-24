@@ -5,10 +5,8 @@ public class ShortUrlTokenTests
     [Fact]
     public void GetValue_CreatesA7CharString()
     {
-        var token = new ShortUrlToken();
+        string token = new ShortUrlToken();
 
-        var value = token.GetValue();
-
-        value.Should().HaveLength(7);
+        token.Should().HaveLength(7);
     }
 }

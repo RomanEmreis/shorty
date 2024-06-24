@@ -1,11 +1,13 @@
 ﻿namespace Shorty.API;
 
-internal readonly struct ShortUrlToken()
+public readonly struct ShortUrlToken
 {
-    private const int    DefaultLength = 7;
-    private const string Chars         = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private const    int    DefaultLength = 7;
+    private const    string Chars         = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    public string GetValue()
+    private readonly string _value;
+
+    public ShortUrlToken()
     {
         Span<char> token = stackalloc char[DefaultLength];
 
@@ -14,6 +16,10 @@ internal readonly struct ShortUrlToken()
             token[i] = Chars[Random.Shared.Next(Chars.Length)];
         }
 
-        return new string(token);
+        _value = new string(token);
     }
+
+    internal static ShortUrlToken NewToken() => new();
+
+    public static implicit operator string(ShortUrlToken token) => token._value;
 }

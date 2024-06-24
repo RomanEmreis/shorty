@@ -21,16 +21,15 @@ internal sealed class UrlRepository(IDistributedCache cache, NpgsqlConnection db
             ON CONFLICT (token) DO NOTHING;
             """;
 
-        var token        = new ShortUrlToken();
-        var createdAt    = DateTime.UtcNow;
-        var value        = string.Empty;
         var count        = 0;
+        var value        = string.Empty;
+        var createdAt    = DateTime.UtcNow;
 
         while (count == 0)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            value        = token.GetValue();
+            value        = ShortUrlToken.NewToken();
             count        = await db.ExecuteAsync(sql, new { value, url, createdAt });
         }
 
