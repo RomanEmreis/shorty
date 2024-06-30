@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-         working-directory: ./frontend/
+         working-directory: ./frontend/shorty-app/
 
     strategy:
       matrix:
@@ -33,7 +33,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: 'frontend/package-lock.json'
+        cache-dependency-path: 'frontend/shorty-app/package-lock.json'
     - run: npm ci
     - run: npm run build --if-present
     - run: npx playwright install
