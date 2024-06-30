@@ -1,0 +1,26 @@
+@import './base.css';
+
+#app {
+  width: 100vw;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+}
+
+@media (hover: hover) {
+  a:hover {
+    text-decoration: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+  #app {
+    display: grid;
+    grid-template-rows: 1fr 1.5fr;
+  }
+}
