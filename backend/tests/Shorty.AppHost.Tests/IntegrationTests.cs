@@ -5,19 +5,6 @@ namespace Shorty.AppHost.Tests;
 
 public class IntegrationTests
 {
-    //[Fact]
-    //public async Task GetFrontendAppRoot_ReturnsOkStatusCode()
-    //{
-    //    var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Shorty_AppHost>();
-    //    await using var app = await appHost.BuildAsync();
-    //    await app.StartAsync();
-
-    //    var httpClient = app.CreateHttpClient("frontend");
-    //    var response = await httpClient.GetAsync("/");
-
-    //    response.StatusCode.Should().Be(HttpStatusCode.OK);
-    //}
-
     [Fact]
     public async Task FrontendResource_ShouldBeAvailable()
     {
@@ -25,7 +12,7 @@ public class IntegrationTests
         await using var app = await appHost.BuildAsync();
         await app.StartAsync();
 
-        var frontendResource = appHost.Resources.Single(resource => resource.Name == "frontend");
+        var frontendResource = appHost.Resources.Single(resource => resource.Name == "shorty-app");
 
         frontendResource.Should().NotBeNull();
     }

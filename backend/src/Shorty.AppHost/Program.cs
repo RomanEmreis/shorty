@@ -26,9 +26,10 @@ var proxy = builder.AddYarp("ingress")
     .LoadFromConfiguration("ReverseProxy");
 
 // frontend
-builder.AddNpmApp("frontend", "../../../frontend")
+builder.AddNpmApp("shorty-app", "../../../frontend/shorty-app")
     .WithReference(proxy)
     .WithHttpEndpoint(env: "PORT")
-    .WithExternalHttpEndpoints();
+    .WithExternalHttpEndpoints()
+    .PublishAsDockerFile();
 
 builder.Build().Run();
