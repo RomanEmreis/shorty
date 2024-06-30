@@ -29,6 +29,7 @@ var proxy = builder.AddYarp("ingress")
 builder.AddNpmApp("frontend", "../../../frontend")
     .WithReference(proxy)
     .WithHttpEndpoint(env: "PORT")
-    .WithExternalHttpEndpoints();
+    .WithExternalHttpEndpoints()
+    .PublishAsDockerFile();
 
 builder.Build().Run();
