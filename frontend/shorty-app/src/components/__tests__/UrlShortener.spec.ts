@@ -8,21 +8,21 @@ const defaultExpectedHtml = `<div data-v-8174189b="" class="center-screen">
   <div data-v-f3006f2f="" data-v-8174189b="" class="url-input"><input data-v-f3006f2f="" type="text" placeholder="https://www.very-long-url.com" value=""><button data-v-f3006f2f="" class="generate-btn"><img data-v-f3006f2f="" alt="generate-img" src="/src/components/icons/generate.svg" width="38" height="38"></button></div>
   <!--v-if-->
   <!--v-if-->
-  <div data-v-8174189b="" class="copyright">Created by Roman Emreis &amp; AI</div>
+  <div data-v-8174189b="" class="copyright">Created by Roman Emreis</div>
 </div>`;
 
 const withShortUrlExpectedHtml = `<div data-v-8174189b="" class="center-screen">
   <div data-v-f3006f2f="" data-v-8174189b="" class="url-input"><input data-v-f3006f2f="" type="text" placeholder="https://www.very-long-url.com" value=""><button data-v-f3006f2f="" class="generate-btn"><img data-v-f3006f2f="" alt="generate-img" src="/src/components/icons/generate.svg" width="38" height="38"></button></div>
   <div data-v-fef33fac="" class="result-field"><a data-v-fef33fac="" href="http://something" target="_blank">http://something</a><button data-v-fef33fac="" class="copy-btn"><img data-v-fef33fac="" alt="copy-img" src="/src/components/icons/copy.svg" width="38" height="38"></button></div>
   <!--v-if-->
-  <div data-v-8174189b="" class="copyright">Created by Roman Emreis &amp; AI</div>
+  <div data-v-8174189b="" class="copyright">Created by Roman Emreis</div>
 </div>`;
 
 const withErrorExpectedHtml = `<div data-v-8174189b="" class="center-screen">
   <div data-v-f3006f2f="" data-v-8174189b="" class="url-input"><input data-v-f3006f2f="" type="text" placeholder="https://www.very-long-url.com" value=""><button data-v-f3006f2f="" class="generate-btn"><img data-v-f3006f2f="" alt="generate-img" src="/src/components/icons/generate.svg" width="38" height="38"></button></div>
   <!--v-if-->
   <div data-v-fef33fac="" class="error-field"><span data-v-fef33fac="">some error</span></div>
-  <div data-v-8174189b="" class="copyright">Created by Roman Emreis &amp; AI</div>
+  <div data-v-8174189b="" class="copyright">Created by Roman Emreis</div>
 </div>`;
 
 describe('UrlShortener', () => {

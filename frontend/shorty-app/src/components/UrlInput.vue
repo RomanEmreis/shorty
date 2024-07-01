@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { useUrlStore } from '@/stores/url';
-import ShortyApi from '@/api/ShortyApi';
+import ShortyApi       from '@/api/ShortyApi';
 
 const url          = useUrlStore();
 const api          = new ShortyApi();
 
-const handleFocus  = (e: any) => e.target?.select?.();
-const handleChange = (e: any) => url.set(e.target?.value ?? '');
+const handleFocus  = (e: FocusEvent)    => (e.target as HTMLInputElement)?.select?.();
+const handleChange = (e: Event)         => url.set((e.target as HTMLInputElement)?.value ?? '');
 const handleKeyUp  = (e: KeyboardEvent) => e.code === 'Enter'&& handleClick();
 const handleClick  = () => {
   if (url.validate()) {
