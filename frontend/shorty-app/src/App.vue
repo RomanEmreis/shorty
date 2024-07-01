@@ -4,7 +4,7 @@ import UrlShortener from '@/components/UrlShortener.vue';
 
 <template>
   <header>
-    <span class='logo-text'>
+    <span class='logo-text not-selectable'>
       <span class="logo-text-capital">S</span>horty
     </span>
   </header>
@@ -36,6 +36,15 @@ main {
   font-weight: 200;
   font-style: normal;
   color: var(--vt-c-white-mute);
+}
+
+.not-selectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .logo-text-capital {
