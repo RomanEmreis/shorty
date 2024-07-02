@@ -23,13 +23,8 @@ app.UseRequestTimeouts();
 
 app.MapDefaultEndpoints();
 
-app.MapPost("/create", async (IUrlRepository urlService, CreateShortUrl command, CancellationToken cancellationToken) => 
-{
-    var token = await urlService.SaveAsync(command.Url, cancellationToken);
-    return Results.Ok(token);
-});
-
-app.MapGet("/{token}", async (IUrlRepository urlService, string token, CancellationToken cancellationToken) => 
+app.MapGet("/health", () => Results.Ok("healthy"));
+app.MapGet("/{token}", async (IUrlRepository urlService, string token, CancellationToken cancellationToken) =>
 {
     var url = await urlService.GetAsync(token, cancellationToken);
     return string.IsNullOrEmpty(url)
@@ -37,7 +32,11 @@ app.MapGet("/{token}", async (IUrlRepository urlService, string token, Cancellat
         : Results.Redirect(url);
 });
 
-app.MapGet("/health", () => Results.Ok("healthy"));
+app.MapPost("/create", async (IUrlRepository urlService, CreateShortUrl command, CancellationToken cancellationToken) => 
+{
+    var token = await urlService.SaveAsync(command.Url, cancellationToken);
+    return Results.Ok(token);
+});
 
 app.Run();
 
