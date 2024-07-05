@@ -14,7 +14,7 @@ Accept: application/json
 
 ###
 
-GET {{Shorty.API_HostAddress}}health
+GET {{Shorty.API_HostAddress}}/health
 Accept: application/json
 
 ###
