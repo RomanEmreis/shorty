@@ -1,3 +1,5 @@
+using Aspirant.Hosting;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 // backend
@@ -16,8 +18,10 @@ var redis = builder.AddRedis("shorty-cache")
 
 // web api
 var api = builder.AddProject<Projects.Shorty_API>("shorty-api")
+    .WithReference(postgres)
     .WithReference(redis)
-    .WithReference(postgres);
+    .WaitFor(postgres)
+    .WaitFor(redis);
 
 // reverse proxy
 var proxy = builder.AddYarp("ingress")

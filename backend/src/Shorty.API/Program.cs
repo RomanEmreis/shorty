@@ -7,8 +7,11 @@ builder.AddServiceDefaults();
 builder.AddRedisDistributedCache("shorty-cache");
 builder.AddNpgsqlDataSource("shorty-db");
 
-builder.Services.AddRequestTimeouts(
-    static options => options.DefaultPolicy = new() { Timeout = TimeSpan.FromMilliseconds(300) });
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddRequestTimeouts(
+        static options => options.DefaultPolicy = new() { Timeout = TimeSpan.FromMilliseconds(300) });   
+}
 
 builder.Services.ConfigureHttpJsonOptions(
     static options => options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default));
@@ -19,7 +22,10 @@ builder.Services.AddScoped<IUrlRepository, UrlRepository>();
 
 var app = builder.Build();
 
-app.UseRequestTimeouts();
+if (!builder.Environment.IsDevelopment())
+{
+    app.UseRequestTimeouts();
+}
 
 app.MapDefaultEndpoints();
 

@@ -1,68 +1,45 @@
+﻿using System.Net;
+using System.Net.Http.Json;
 using FluentAssertions;
-using System.Net;
 
 namespace Shorty.AppHost.Tests;
 
-public class IntegrationTests
+public class IntegrationTests : ShortyAppHostFactory
 {
     [Fact]
-    public async Task FrontendResource_ShouldBeAvailable()
+    public async Task PostUrl_And_GetUrl_ReturnsOKStatusCode()
     {
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Shorty_AppHost>();
-        await using var app = await appHost.BuildAsync();
-        await app.StartAsync();
+        const string expectedUrl = "https://www.google.com";
+        string token;
+        
+        // create short url
+        using (var httpClient = _app!.CreateHttpClient("shorty-api"))
+        {
+            var content = JsonContent.Create(new { url = expectedUrl });
+            var postResponse = await httpClient.PostAsync("/create", content);
 
-        var frontendResource = appHost.Resources.Single(resource => resource.Name == "shorty-app");
+            token = await postResponse.Content.ReadAsStringAsync();
+            
+            postResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            token.Should().NotBeNullOrWhiteSpace();
+        }
 
-        frontendResource.Should().NotBeNull();
+        // resolve short url
+        using (var httpClient = _app!.CreateHttpClient("shorty-api"))
+        {
+            var response = await httpClient.GetAsync($"/{token.Replace("\"", "")}");
+
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.RequestMessage!.RequestUri.Should().Be(expectedUrl);
+        }
     }
-
+    
     [Fact]
-    public async Task GetAPIHealth_ReturnsOKStatusCode()
+    public async Task GetUrl_UrlDoesNotExists_ReturnsNotFoundStatusCode()
     {
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Shorty_AppHost>();
-        await using var app = await appHost.BuildAsync();
-        await app.StartAsync();
+        var httpClient = _app!.CreateHttpClient("shorty-api");
+        var response   = await httpClient.GetAsync("/xxxxxxx");
 
-        var httpClient = app.CreateHttpClient("shorty-api");
-        var response = await httpClient.GetAsync("/health");
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-    }
-
-    [Fact]
-    public async Task IngressResource_ShouldBeAvailable()
-    {
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Shorty_AppHost>();
-        await using var app = await appHost.BuildAsync();
-        await app.StartAsync();
-
-        var ingressResource = appHost.Resources.Single(resource => resource.Name == "ingress");
-
-        ingressResource.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task PostgresResource_ShouldBeAvailable()
-    {
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Shorty_AppHost>();
-        await using var app = await appHost.BuildAsync();
-        await app.StartAsync();
-
-        var postgresResource = appHost.Resources.Single(resource => resource.Name == "postgres");
-
-        postgresResource.Should().NotBeNull();
-    }
-
-    [Fact]
-    public async Task RedisResource_ShouldBeAvailable()
-    {
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Shorty_AppHost>();
-        await using var app = await appHost.BuildAsync();
-        await app.StartAsync();
-
-        var redisResource = appHost.Resources.Single(resource => resource.Name == "shorty-cache");
-
-        redisResource.Should().NotBeNull();
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }
