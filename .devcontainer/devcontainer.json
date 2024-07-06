@@ -25,5 +25,5 @@
       ]
     }
   },
-  "onCreateCommand": "dotnet workload install aspire"
+  "onCreateCommand": "sudo dotnet workload install aspire"
 }
