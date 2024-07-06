@@ -26,5 +26,8 @@
     }
   },
   "onCreateCommand": "sudo dotnet workload install aspire",
-  "postCreateCommand": "npm i --prefix ./frontend/shorty-app"
+  "postCreateCommand": [
+    "npm i --prefix ./frontend/shorty-app",
+    "npx playwright install --prefix ./frontend/shorty-app"
+  ]
 }
