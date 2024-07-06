@@ -1,21 +1,18 @@
 export default class ShortyApi {
-  create = (
-    originalUrl: string,
-    onSuccess: (newUrl: string) => void,
-    onError: (errortext: string) => void
-  ) => {
-    const xhr = new XMLHttpRequest();
-
-    xhr.open('POST', '/create');
-    xhr.setRequestHeader("Content-Type", "application/json;");
-
-    xhr.onerror = () => onError('An error occurred while creating a short URL');
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        const newUrl = `${xhr.responseURL.replace('/create', '')}/${xhr.responseText.replace(/['"]+/g, '')}`;
-        onSuccess(newUrl);
+  create = async (originalUrl: string) : Promise<string | null> => {
+    const response = await fetch('/create', {
+      method: 'POST',
+      body: JSON.stringify({ url: originalUrl }),
+      headers: {
+        "Content-Type": "application/json",
       }
-    };
-    xhr.send(JSON.stringify({ url: originalUrl }));
-  };
+    });
+
+    if (response.ok) {
+      const responseText = await response.text();
+      return `${response.url.replace('/create', '')}/${responseText.replace(/['"]+/g, '')}`;
+    } else {
+      return null;
+    }
+  }
 }

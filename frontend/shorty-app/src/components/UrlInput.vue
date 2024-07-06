@@ -8,13 +8,14 @@ const api          = new ShortyApi();
 const handleFocus  = (e: FocusEvent)    => (e.target as HTMLInputElement)?.select?.();
 const handleChange = (e: Event)         => url.set((e.target as HTMLInputElement)?.value ?? '');
 const handleKeyUp  = (e: KeyboardEvent) => e.code === 'Enter'&& handleClick();
-const handleClick  = () => {
+const handleClick  = async () => {
   if (url.validate()) {
-    api.create(
-      url.original,
-      (newUrl) => url.shorten(newUrl),
-      (error) => url.setError(error)
-    );
+    const newUrl = await api.create(url.original);
+    if (newUrl) {
+      url.shorten(newUrl);
+    } else {
+      url.setError('An error occurred while creating a short URL');
+    }
   }
 };
 
