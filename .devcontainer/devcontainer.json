@@ -14,9 +14,7 @@
     "vscode": {
       "extensions": [
         "redhat.vscode-yaml",
-        "streetsidesoftware.code-spell-checker",
         "ms-azuretools.vscode-bicep",
-        "eamodio.gitlens",
         "vue.volar",
         "vitest.explorer",
         "ms-playwright.playwright",
@@ -26,8 +24,5 @@
     }
   },
   "onCreateCommand": "sudo dotnet workload install aspire",
-  "postCreateCommand": [
-    "npm i --prefix ./frontend/shorty-app",
-    "npx playwright install --prefix ./frontend/shorty-app"
-  ]
+  "postCreateCommand": "npm i --prefix ./frontend/shorty-app"
 }
