@@ -25,5 +25,6 @@
       ]
     }
   },
-  "onCreateCommand": "sudo dotnet workload install aspire"
+  "onCreateCommand": "sudo dotnet workload install aspire",
+  "postCreateCommand": "npm i --prefix ./frontend/shorty-app"
 }
