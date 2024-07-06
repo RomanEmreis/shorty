@@ -2,8 +2,7 @@
 import { useUrlStore } from '@/stores/url';
 import UrlOutputError from '@/components/UrlOutputError.vue';
 import UrlOutputResult from '@/components/UrlOutputResult.vue';
-const url        = useUrlStore();
-const handleCopy = () => navigator.clipboard.writeText(url.new);
+const url = useUrlStore();
 </script>
 
 <template>

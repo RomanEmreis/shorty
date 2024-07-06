@@ -1,0 +1,29 @@
+﻿{
+  "name": "Shorty",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/dotnet:2": {},
+    "ghcr.io/devcontainers/features/node:1.5.0": {},
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/azure/azure-dev/azd:0": { "version": "latest" },
+    "ghcr.io/prom3theu5/aspirational-manifests/aspirate:latest": {},
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "redhat.vscode-yaml",
+        "streetsidesoftware.code-spell-checker",
+        "ms-azuretools.vscode-bicep",
+        "eamodio.gitlens",
+        "vue.volar",
+        "vitest.explorer",
+        "ms-playwright.playwright",
+        "dbaeumer.vscode-eslint",
+        "antfu.vite"
+      ]
+    }
+  },
+  "onCreateCommand": "sudo dotnet workload install aspire"
+}
