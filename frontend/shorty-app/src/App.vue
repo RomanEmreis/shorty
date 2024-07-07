@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import UrlShortener from '@/components/UrlShortener.vue';
+import ThemeToggle from '@/components/ThemeToggle.vue';
 </script>
 
 <template>
@@ -7,6 +8,7 @@ import UrlShortener from '@/components/UrlShortener.vue';
     <span class='logo-text not-selectable'>
       <span class="logo-text-capital">S</span>horty
     </span>
+    <ThemeToggle class="topright" />
   </header>
 
   <main>
@@ -35,7 +37,7 @@ main {
   font-size: 7rem;
   font-weight: 200;
   font-style: normal;
-  color: var(--vt-c-white-mute);
+  color: var(--header-text);
 }
 
 .not-selectable {
@@ -50,5 +52,11 @@ main {
 .logo-text-capital {
   margin-left: 1rem;
   color: hsla(160, 100%, 37%, 1);
+}
+
+.topright {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
 }
 </style>

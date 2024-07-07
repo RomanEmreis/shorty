@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useUrlStore } from '@/stores/url';
-import ShortyApi       from '@/api/ShortyApi';
+import UrlGenerateButton from '@/components/UrlGenerateButton.vue';
+import ShortyApi from '@/api/ShortyApi';
 
 const url          = useUrlStore();
 const api          = new ShortyApi();
@@ -18,7 +19,6 @@ const handleClick  = async () => {
     }
   }
 };
-
 </script>
 
 <template>
@@ -31,9 +31,7 @@ const handleClick  = async () => {
       @change.prevent="handleChange" 
       @focus.prevent="handleFocus" />
 
-    <button class='generate-btn' @click.prevent="handleClick">
-      <img alt="generate-img" src="./icons/generate.svg" width="38" height="38" />
-    </button>
+    <UrlGenerateButton :handle-click="handleClick" />
   </div>
 </template>
 
@@ -47,7 +45,7 @@ const handleClick  = async () => {
   justify-content: center;
   align-items: center;
   text-align: center;
-  background-color: var(--vt-c-divider-light-1);
+  background-color: var(--url-input-background);
 }
 
 .url-input input {
@@ -55,7 +53,7 @@ const handleClick  = async () => {
   margin-left: 1.5rem;
   margin-right: 1rem;
   font-size: 1.7rem;
-  color: var(--vt-c-white-mute);
+  color: var(--input-text);
   border: none;
   border-color: transparent;
   background-color: transparent;
@@ -63,31 +61,5 @@ const handleClick  = async () => {
 
 .url-input input:focus {
   outline-width: 0;
-}
-
-.generate-btn {
-  position: relative;
-  height: 72%;
-  width: 4rem;
-  cursor: pointer;
-  margin-right: 0.5rem;
-  margin-left: 1rem;
-  background: transparent;
-  border-radius: 5px;
-  border: 0px solid transparent;
-  opacity: .7;
-}
-
-.generate-btn:hover {
-  opacity: .4;
-}
-
-.generate-btn img {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
 }
 </style>
