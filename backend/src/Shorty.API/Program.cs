@@ -1,5 +1,6 @@
 using Shorty.API.Features.Urls;
 using System.Text.Json.Serialization;
+using Shorty.API.Features.Counter;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
@@ -19,6 +20,7 @@ builder.Services.ConfigureHttpJsonOptions(
 builder.Services.AddProblemDetails();
 
 builder.Services.AddScoped<IUrlRepository, UrlRepository>();
+builder.Services.AddScoped<ICounterService, CounterService>();
 
 var app = builder.Build();
 
