@@ -21,7 +21,8 @@ var api = builder.AddProject<Projects.Shorty_API>("shorty-api")
     .WithReference(postgres)
     .WithReference(redis)
     .WaitFor(postgres)
-    .WaitFor(redis);
+    .WaitFor(redis)
+    .WithReplicas(3);
 
 // reverse proxy
 var proxy = builder.AddYarp("ingress")

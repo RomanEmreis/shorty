@@ -2,24 +2,51 @@
 
 public readonly struct ShortUrlToken
 {
-    private const    int    DefaultLength = 7;
-    private const    string Chars         = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
+    internal const long      
+        MinValue = 56_800_235_584L, 
+        MaxValue = 3_521_614_606_207L; 
+    
+    private const int    
+        DefaultLength = 7, 
+        Base = 62;
+    
+    private const string Chars = "QoNPMlEDkABC06789zyxwvutsrq12435pOnmLKjZYXWVUTSRihgfedcbJIHGFa";
+    
     private readonly string _value;
 
-    public ShortUrlToken()
+    private ShortUrlToken(long count)
     {
         Span<char> token = stackalloc char[DefaultLength];
 
-        for (int i = 0; i < token.Length; ++i)
+        var j = DefaultLength;
+        while (count != 0)
         {
-            token[i] = Chars[Random.Shared.Next(Chars.Length)];
+            var i = (byte) (count % Base);
+            token[--j] = Chars[i];
+            count /= Base;
         }
 
         _value = new string(token);
     }
 
-    internal static ShortUrlToken NewToken() => new();
+    /// <summary>
+    ///     Idempotent creates a unique 7-character token based on the provided count value.
+    ///     Passing the same count value leads to the same result.
+    ///     <br/>
+    ///     The overall number of available unique tokens is 3 464 814 370 623,
+    ///     for the greater number of tokens the length should be increased to 8 e.t.c
+    /// </summary>
+    /// <param name="count">A value that a token will be based on</param>
+    /// <returns>
+    ///     A 7-character token based on the provided count value.
+    /// </returns>
+    internal static ShortUrlToken NewToken(long count)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(count, MinValue);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(count, MaxValue);
+        
+        return new ShortUrlToken(count);
+    }
 
     public static implicit operator string(ShortUrlToken token) => token._value;
 }
