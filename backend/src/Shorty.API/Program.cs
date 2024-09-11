@@ -1,5 +1,6 @@
 using Shorty.API.Features.Urls;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Shorty.API.Features.Counter;
 
 var builder = WebApplication.CreateSlimBuilder(args);
@@ -19,8 +20,8 @@ builder.Services.ConfigureHttpJsonOptions(
 
 builder.Services.AddProblemDetails();
 
-builder.Services.AddScoped<IUrlRepository, UrlRepository>();
 builder.Services.AddScoped<ICounterService, CounterService>();
+builder.Services.AddScoped<IUrlRepository, UrlRepository>();
 
 var app = builder.Build();
 
@@ -31,18 +32,18 @@ if (!builder.Environment.IsDevelopment())
 
 app.MapDefaultEndpoints();
 
-app.MapGet("/health", () => Results.Ok("healthy"));
-app.MapGet("/{token}", async (IUrlRepository urlService, string token, CancellationToken cancellationToken) =>
+app.MapGet("/health", static () => Results.Ok("healthy"));
+app.MapGet("/{token}", async (IUrlRepository repository, string token, CancellationToken cancellationToken) =>
 {
-    var url = await urlService.GetAsync(token, cancellationToken);
+    var url = await repository.GetAsync(token, cancellationToken);
     return string.IsNullOrEmpty(url)
         ? Results.NotFound()
         : Results.Redirect(url);
 });
 
-app.MapPost("/create", async (IUrlRepository urlService, CreateShortUrl command, CancellationToken cancellationToken) => 
+app.MapPost("/create", async (IUrlRepository repository, CreateShortUrl command, CancellationToken cancellationToken) => 
 {
-    var token = await urlService.SaveAsync(command.Url, cancellationToken);
+    var token = await repository.SaveAsync(command.Url, cancellationToken);
     return Results.Ok(token);
 });
 

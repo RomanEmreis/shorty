@@ -10,7 +10,7 @@ public readonly struct ShortUrlToken
         DefaultLength = 7, 
         Base = 62;
     
-    private const string Chars = "QoNPMlEDkABC06789zyxwvutsrq12435pOnmLKjZYXWVUTSRihgfedcbJIHGFa";
+    private const string Chars = "QoNPMlEDkABC06789zxyvwustrq21453pOnmLKjZYXWVUTSRihgfedcbJIHGFa";
     
     private readonly string _value;
 
@@ -21,7 +21,7 @@ public readonly struct ShortUrlToken
         var j = DefaultLength;
         while (count != 0)
         {
-            var i = (byte) (count % Base);
+            int i = (int) (count % Base);
             token[--j] = Chars[i];
             count /= Base;
         }
@@ -47,6 +47,8 @@ public readonly struct ShortUrlToken
         
         return new ShortUrlToken(count);
     }
+
+    public override string ToString() => _value;
 
     public static implicit operator string(ShortUrlToken token) => token._value;
 }

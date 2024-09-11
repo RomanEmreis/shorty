@@ -1,20 +1,21 @@
-@Shorty.API_HostAddress = http://localhost:5254
+@host = http://localhost:5254
 
 ###
 
-POST {{Shorty.API_HostAddress}}/create
+POST {{host}}/create
 Accept: application/json
 Content-Type: application/json
+
 { "url": "https://github.com/RomanEmreis/shorty" }
 
 ###
 
-GET {{Shorty.API_HostAddress}}/CYWQ6
+GET {{host}}/oQQQQQo
 Accept: application/json
 
 ###
 
-GET {{Shorty.API_HostAddress}}/health
+GET {{host}}/health
 Accept: application/json
 
 ###
