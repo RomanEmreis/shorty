@@ -24,7 +24,7 @@ internal sealed class UrlRepository(IDistributedCache cache, ICounterService cou
         var createdAt = DateTime.UtcNow;
         var count = await counter.IncrementAsync();
         string value = ShortUrlToken.NewToken(count);
-        
+
         await db.ExecuteAsync(sql, new { value, url, createdAt });
         await SaveToCacheAsync(value, url, cancellationToken);
         

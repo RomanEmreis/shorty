@@ -1,6 +1,5 @@
 using Shorty.API.Features.Urls;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Shorty.API.Features.Counter;
 
 var builder = WebApplication.CreateSlimBuilder(args);
@@ -22,6 +21,7 @@ builder.Services.AddProblemDetails();
 
 builder.Services.AddScoped<ICounterService, CounterService>();
 builder.Services.AddScoped<IUrlRepository, UrlRepository>();
+builder.Services.AddScoped<ICounterService, CounterService>();
 
 var app = builder.Build();
 
