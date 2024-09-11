@@ -21,7 +21,6 @@ builder.Services.AddProblemDetails();
 
 builder.Services.AddScoped<ICounterService, CounterService>();
 builder.Services.AddScoped<IUrlRepository, UrlRepository>();
-builder.Services.AddScoped<ICounterService, CounterService>();
 
 var app = builder.Build();
 
