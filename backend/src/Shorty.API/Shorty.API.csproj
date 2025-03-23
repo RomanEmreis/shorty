@@ -1,20 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>true</InvariantGlobalization>
     <PublishAot>true</PublishAot>
 	<IlcGenerateMstatFile>true</IlcGenerateMstatFile>
 	<InterceptorsPreviewNamespaces>$(InterceptorsPreviewNamespaces);Dapper.AOT</InterceptorsPreviewNamespaces>
+	<LangVersion>default</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Npgsql" Version="8.0.2" />
-    <PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="8.0.2" />
-    <PackageReference Include="Dapper" Version="2.1.35" />
-    <PackageReference Include="Dapper.AOT" Version="1.0.31" />
+    <PackageReference Include="Aspire.Npgsql" Version="9.1.0" />
+    <PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="9.1.0" />
+    <PackageReference Include="Dapper" Version="2.1.66" />
+    <PackageReference Include="Dapper.AOT" Version="1.0.45" />
   </ItemGroup>
 
   <ItemGroup>

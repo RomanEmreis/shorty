@@ -1,5 +1,3 @@
-using Aspirant.Hosting;
-
 var builder = DistributedApplication.CreateBuilder(args);
 
 // backend
@@ -14,7 +12,7 @@ var postgres = builder.AddPostgres("postgres")
 
 // cache
 var redis = builder.AddRedis("shorty-cache")
-    .WithRedisCommander();
+    .WithRedisInsight();
 
 // web api
 var api = builder.AddProject<Projects.Shorty_API>("shorty-api")

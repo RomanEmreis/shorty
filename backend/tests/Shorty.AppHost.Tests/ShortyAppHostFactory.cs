@@ -1,4 +1,6 @@
-﻿namespace Shorty.AppHost.Tests;
+﻿using Aspire.Hosting;
+
+namespace Shorty.AppHost.Tests;
 
 public abstract class ShortyAppHostFactory : IAsyncLifetime
 {
